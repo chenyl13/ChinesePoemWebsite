@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Chinese Poem Generator</title>
+    </head>
+    <body>
+        <h1>Chinese Poem Generator</h1>
+        {% for line in data %}
+        <div>
+            <tr>
+                {{line}}
+            </tr>
+        </div>
+        {% empty %}
+        <div class="no-post">
+            生成诗歌出错
+        </div>
+        {% endfor %}
+    </body>
+</html>

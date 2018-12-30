@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Chinese Poem Generator</title>
+    </head>
+    <body>
+        <h1>Chinese Poem Generator</h1>
+        <form method="post" action="/results">
+            {% csrf_token %}
+            <input type="text" placeholder="word"  name="first_word" required>
+            <button type="submit">generate</button>
+        </form> 
+        <!-- hello world -->
+    </body>
+</html>
