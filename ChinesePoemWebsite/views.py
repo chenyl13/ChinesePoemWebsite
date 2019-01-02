@@ -30,7 +30,7 @@ def results(request):
         print(first_word)
         # poem = infer(model, final, words, word2int, dataset.emb)
         poem = generate(first_word)
-        return render(request, 'results.html', {'data': poem})
+        return render(request, 'results.html', {'data': poem, 'first_word':first_word})
 
 def generate(first_word):
     # return [u"春风飘雨霁，",u"天地已无尘，",u"水色连山色，",u"山深水上清。"]
@@ -43,12 +43,16 @@ def generate(first_word):
     final.to(device)
     if True:
         try:
-            poem = infer(model, final, words, word2int, emb, hidden_size = model.hidden_size, start=first_word)
+            tmp = infer(model, final, words, word2int, emb, hidden_size = model.hidden_size, start=first_word)
+            poem = []
+            for i in range(len(tmp)):
+                poem.append([tmp[i][0:12], tmp[i][12:]])
+            # print(poem)
         except KeyError:
             poem = u'此字在语料库中未出现过，请更换首字'
     return poem
 
-def infer(model, final, words, word2int, emb, hidden_size=256, start=u'春', n=1):
+def infer(model, final, words, word2int, emb, hidden_size=256, start=u'春', n=4):
     dim_PE = 100
     PE_const = 1000
     device = torch.device('cpu') if isinstance(final.weight, torch.FloatTensor) else final.weight.get_device()

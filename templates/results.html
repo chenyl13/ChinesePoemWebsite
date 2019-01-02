@@ -6,17 +6,22 @@
         <title>Chinese Poem Generator</title>
     </head>
     <body>
-        <h1>Chinese Poem Generator</h1>
-        {% for line in data %}
-        <div>
-            <tr>
-                {{line}}
-            </tr>
-        </div>
-        {% empty %}
-        <div class="no-post">
-            生成诗歌出错
-        </div>
+        <h1>中文诗歌生成</h1>
+        <h2>{{ first_word }}</h2>
+        {% for poem in data %}
+            <div>
+                {% for line in poem %}
+                    <div>
+                        {{line}}
+                    </div>
+                {% endfor %}
+            </div>
+            <br />
+            <br />
+            {% empty %}
+            <div class="no-post">
+                生成诗歌出错
+            </div>
         {% endfor %}
     </body>
 </html>
