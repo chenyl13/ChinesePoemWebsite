@@ -8,9 +8,22 @@
         <h1>中文诗歌生成</h1>
         <form method="post" action="/results">
             {% csrf_token %}
-            <input type="text" placeholder="word"  name="first_word" required>
+            <input type="text" placeholder="word"  name="first_word">
             <button type="submit">generate</button>
+            <!-- <div class="ui search">
+                    <div class="ui icon input">
+                      <input class="prompt" type="text" placeholder="Common passwords...">
+                      <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+            </div> -->
         </form> 
+        <div>
+            用法：<br/>
+            1、输入首字，生成诗歌<br/>
+            2、随机生成诗歌<br/>
+            3、输入四个字，生成藏头诗<br/>
+        </div>
         <!-- hello world -->
     </body>
 </html>

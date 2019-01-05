@@ -35,30 +35,34 @@ def results(request):
 def generate(first_word):
     # return [u"春风飘雨霁，",u"天地已无尘，",u"水色连山色，",u"山深水上清。"]
     checkpoint = torch.load('./model/production.pth')
-    hidden_size = 128
     model, final, words, word2int, emb = checkpoint['model'], checkpoint['final'], checkpoint['words'], checkpoint['word2int'], checkpoint['emb']
     print('Finish Loading')
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     final.to(device)
+    start_words = np.load('./model/start_words.npy')
+    start_freq = np.load('./model/start_freq.npy')
+    print(len(start_words),len(start_freq))
     if True:
         try:
+            if len(first_word) == 0:
+                first_word = start_words[prob_sample(start_freq)]
             tmp = infer(model, final, words, word2int, emb, hidden_size = model.hidden_size, start=first_word)
             poem = []
             for i in range(len(tmp)):
-                poem.append([tmp[i][0:12], tmp[i][12:]])
-            # print(poem)
+                poem.append([tmp[i][0:6], tmp[i][6:12], tmp[i][12:18], tmp[i][18:]])
+            print(evaluate(poem))
         except KeyError:
             poem = u'此字在语料库中未出现过，请更换首字'
     return poem
 
-def infer(model, final, words, word2int, emb, hidden_size=256, start=u'春', n=4):
+def infer(model, final, words, word2int, emb, hidden_size=256, start=u'春', n=1):
     dim_PE = 100
     PE_const = 1000
     device = torch.device('cpu') if isinstance(final.weight, torch.FloatTensor) else final.weight.get_device()
     h = torch.zeros((1, n, hidden_size))
-    x = torch.nn.functional.embedding(torch.full((n,), word2int[start], dtype=torch.long), emb).unsqueeze(0)
-    ret = [[start] for i in range(n)]
+    x = torch.nn.functional.embedding(torch.full((n,), word2int[start[0]], dtype=torch.long), emb).unsqueeze(0)
+    ret = [[start[0]] for i in range(n)]
     for i in range(19):
         # add PE dims
         pe = torch.tensor(pos2PE((i % 5) + 1), dtype=torch.float).repeat(1, n, 1)
@@ -66,9 +70,10 @@ def infer(model, final, words, word2int, emb, hidden_size=256, start=u'春', n=4
         x, h, pe = x.to(device), h.to(device), pe.to(device)
         x = torch.cat((x, pe), dim=2)
         x, h = model(x, h)
-        # h = torch.rand((1, n, hidden_size))
-        w = prob_sample(torch.nn.functional.softmax(final(x.view(-1, hidden_size)), dim=-1).data.cpu().numpy())
-        # w = torch.argmax(, dim = 1).cpu()
+        if i % 5 == 4 and i // 5 + 1 < len(start):
+            w = np.array([word2int[start[i // 5 + 1]] for _ in range(n)])
+        else:
+            w = model_prob_sample(torch.nn.functional.softmax(final(x.view(-1, hidden_size)), dim=-1).data.cpu().numpy())
         x = torch.nn.functional.embedding(torch.from_numpy(w), emb).unsqueeze(0)
         for j in range(len(w)):
             ret[j].append(words[w[j]])
@@ -91,7 +96,14 @@ def pos2PE(pos):
     PE_tmp[1::2] = np.cos(PE_tmp[1::2])
     return PE_tmp
 
-def prob_sample(w_list, topn = 10):
+def prob_sample(weights, topn = 100):
+    idx = np.argsort(weights)[::-1]
+    t = np.cumsum(weights[idx[:topn]])
+    s = np.sum(weights[idx[:topn]])
+    sample = int(np.searchsorted(t, np.random.rand(1) * s))
+    return idx[sample]
+
+def model_prob_sample(w_list, topn = 10):
     samples = []
     for weights in w_list:
         idx = np.argsort(weights)[::-1]
@@ -100,3 +112,12 @@ def prob_sample(w_list, topn = 10):
         sample = int(np.searchsorted(t, np.random.rand(1) * s))
         samples.append(idx[sample])
     return np.array(samples)
+
+def evaluate(poems):
+    scores = []
+    for poem in poems:
+        dic = {}
+        for word in poem:
+            dic[word] = 1
+        scores.append(len(dic))
+    return poems[np.argmax(scores)]
