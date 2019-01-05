@@ -1,27 +1,58 @@
 
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="stylesheet" type="text/css" href="static/semantic.min.css">
     <head>
         <meta charset="UTF-8">
+        <style type="text/css">
+            body {
+              background-color: #DADADA;
+            }
+            body > .grid {
+              height: 100%;
+            }
+            .image {
+              margin-top: -100px;
+            }
+            .column {
+              max-width: 450px;
+            }
+        </style>
         <title>Chinese Poem Generator</title>
     </head>
     <body>
-        <h1>中文诗歌生成</h1>
-        <h2>{{ first_word }}</h2>
-        {% for poem in data %}
-            <div>
-                {% for line in poem %}
-                    <div>
-                        {{line}}
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <h2 class="ui teal image header">
+                    <!-- <img src="assets/images/logo.png" class="image"> -->
+                    <div class="content">
+                        中文诗歌生成
                     </div>
-                {% endfor %}
+                </h2>
+                <div class="ui stacked segment">
+                    <h3 class="ui header">{{ first_word }}</h3>
+                    {% for poem in data %}
+                        <div>
+                            {% for line in poem %}
+                                <div>
+                                    {{line}}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <br />
+                        <br />
+                        {% empty %}
+                        <div class="no-post">
+                            生成诗歌出错
+                        </div>
+                    {% endfor %}
+                </div>
+                <form class="ui large form" action="/">
+                    <button class="ui fluid large teal submit button" type="submit">
+                        返回
+                    </button>
+                </form>
             </div>
-            <br />
-            <br />
-            {% empty %}
-            <div class="no-post">
-                生成诗歌出错
-            </div>
-        {% endfor %}
+        </div>
     </body>
 </html>
