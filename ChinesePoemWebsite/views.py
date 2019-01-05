@@ -64,7 +64,7 @@ def generate(first_word, length):
                 poem.append(tmp2)
             # print(evaluate(poem))
         except KeyError:
-            poem = u'此字在语料库中未出现过，请更换首字'
+            poem = [[u'此字在语料库中未出现过，'],[u'请更换首字']]
     return poem
 
 def infer(model, final, words, word2int, emb, hidden_size=256, start=u'春', n=1, num=5):
