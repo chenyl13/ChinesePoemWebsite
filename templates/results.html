@@ -15,7 +15,7 @@
               margin-top: -100px;
             }
             .column {
-              max-width: 450px;
+              max-width: 350px;
             }
         </style>
         <title>Chinese Poem Generator</title>
@@ -23,13 +23,10 @@
     <body>
         <div class="ui middle aligned center aligned grid">
             <div class="column">
-                <h2 class="ui teal image header">
-                    <!-- <img src="assets/images/logo.png" class="image"> -->
-                    <div class="content">
-                        中文诗歌生成
-                    </div>
+                <h2 class="ui teal header">
+                    中文诗歌生成
                 </h2>
-                <div class="ui stacked segment">
+                <div class="ui rised clearing segment">
                     <h3 class="ui header">{{ first_word }}</h3>
                     {% for poem in data %}
                         <div>
@@ -39,13 +36,18 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <br />
-                        <br />
                         {% empty %}
                         <div class="no-post">
                             生成诗歌出错
                         </div>
                     {% endfor %}
+                    <form class="ui large form" method="post" action="/results">
+                        {% csrf_token %}
+                        <input type="hidden" name="first_word" value={{first_word}}>
+                        <button class="ui right floated teal basic icon button" type="submit">
+                            <i class="sync alternate teal icon"></i>
+                        </button>
+                    </form>
                 </div>
                 <form class="ui large form" action="/">
                     <button class="ui fluid large teal submit button" type="submit">

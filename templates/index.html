@@ -14,7 +14,7 @@
               margin-top: -100px;
             }
             .column {
-              max-width: 450px;
+              max-width: 350px;
             }
         </style>
         <title>Chinese Poem Generator</title>
@@ -30,11 +30,11 @@
                 </h2>
                 <form class="ui large form" method="post" action="/results">
                     {% csrf_token %}
-                    <div class="ui stacked segment">
+                    <div class="ui segment">
                         <div class="field">
                             <div class="ui left icon input">
                                 <!-- <i class="user icon"></i> -->
-                                <input type="text" name="first_word" placeholder="word">
+                                <input type="text" name="first_word" placeholder="输入首字">
                             </div>
                         </div>
                         <button class="ui fluid large teal submit button" type="submit">
@@ -44,11 +44,18 @@
                     
                     <div class="ui error message"></div>
                 </form>
-                <div class="ui message">
-                    用法：<br/>
-                    1、输入首字，生成诗歌<br/>
-                    2、随机生成诗歌<br/>
-                    3、输入四个字，生成藏头诗<br/>
+                <div class="ui left aligned message">
+                    <ul class="list">
+                        <li>输入首字，生成诗歌</li>
+                        <li>随机生成诗歌</li>
+                        <li>输入四字短语，生成藏头诗</li>
+                    </ul>
+                </div>
+                <div>
+                    <!-- <i class="github icon"></i> -->
+                    <a href="https://github.com/Sleepychord/ChinesePoemGeneration" target="_blank">
+                        Github
+                    </a>
                 </div>
             </div>
         </div>
