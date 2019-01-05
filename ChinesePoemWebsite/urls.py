@@ -18,6 +18,7 @@ from django.contrib import admin
 import views
 
 urlpatterns = [
-    url(r'^results$', views.results),
-    url(r'^$', views.index),
+    # url(r'^results$', views.results),
+    # url(r'^$', views.index),
+    url(r'^$', views.index2),
 ]

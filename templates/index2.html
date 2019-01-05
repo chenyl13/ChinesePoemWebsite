@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="static/semantic.min.css">
+        <script src="static/jquery-1.4.1.min.js"></script>
+        <script src="static/semantic.min.js"></script>
+        <script src="static/index.js"></script>
+        
+        <meta charset="UTF-8">
+        <style type="text/css">
+            body {
+              background-color: #DADADA;
+            }
+            body > .grid {
+              height: 100%;
+            }
+            .image {
+              margin-top: -100px;
+            }
+            .column {
+              max-width: 500px;
+            }
+        </style>
+        <title>Chinese Poem Generator</title>
+    </head>
+    <body>
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <div class="ui teal image header" style="font-size:30pt;line-height:45pt;">
+                    <!-- <img src="assets/images/logo.png" class="image"> -->
+                    <div class="content">
+                        中文诗歌生成
+                    </div>
+                </div>
+                <div class="ui clearing segment">
+                    <div id='buttons' class="ui buttons">
+                        <button id="5" class="ui big teal basic button">五言</button>
+                        <button id="7" class="ui big teal basic button">七言</button>
+                    </div>
+                    <br/>
+                    <br/>
+                    <form class="ui large form" method="post" action="/">
+                        {% csrf_token %}
+                        <input id="length" type="hidden" name="length" value=5>
+                        <div class="ui fluid action input">
+                            <input type="text" name="first_word" placeholder="输入首字">
+                            <button class="ui big teal submit button" type="submit">
+                                生成
+                            </button>
+                        </div>
+                    </form>
+                    <br/>
+                    <br/>
+                    <div id="poem">
+                        <div class="ui header" style="font-size:25pt;line-height:35pt;">{{ first_word }}</div>
+                        {% for poem in data %}
+                            <div>
+                                {% for line in poem %}
+                                    <div style="font-size:20pt;line-height:30pt;">
+                                        {{line}}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% empty %}
+                            <div class="no-post">
+                                <!-- 生成诗歌出错 -->
+                            </div>
+                        {% endfor %}
+                        <form class="ui large form" method="post" action="/">
+                            {% csrf_token %}
+                            <input id="first_word" type="hidden" name="first_word" value={{first_word}}>
+                            <input id="length2" type="hidden" name="length" value={{length}}>
+                            <button id="refresh" class="ui right floated teal basic big icon button" type="submit">
+                                <i class="sync alternate icon"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="ui left aligned message">
+                    <ul class="list" style="font-size:12pt;line-height:18pt;">
+                        <li>输入首字，生成诗歌</li>
+                        <li>随机生成诗歌</li>
+                        <li>输入短语，生成藏头诗</li>
+                    </ul>
+                </div>
+                <div>
+                    <!-- <i class="github icon"></i> -->
+                    <a style="font-size:12pt;line-height:18pt;" href="https://github.com/Sleepychord/ChinesePoemGeneration" target="_blank">
+                        Github
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
